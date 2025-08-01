@@ -1,13 +1,25 @@
 FROM golang:1.24.2-alpine3.11 AS build
+
 RUN apk --no-cache add gcc g++ make ca-certificates
-WORKDIR /go/src/github.com/akhilsharma90/go-graphql-microservice
+
+# Set the working directory inside the container
+WORKDIR /app
+
 COPY go.mod go.sum ./
-COPY vendor vendor
-COPY account account
-RUN GO111MODULE=on go build -mod vendor -o /go/bin/app ./account/cmd/account
+COPY vendor ./vendor
+
+COPY account ./account
+
+RUN go build -mod=vendor -o /app/account-service ./account/cmd
 
 FROM alpine:3.11
+
+# Set working directory
 WORKDIR /usr/bin
-COPY --from=build /go/bin .
+
+# Copy the compiled binary from the builder stage
+COPY --from=build /app/account-service ./app
 EXPOSE 8080
-CMD ["app"]
+
+# Command to run the binary
+CMD ["./app"]
