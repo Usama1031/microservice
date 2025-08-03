@@ -27,4 +27,5 @@ require (
 	golang.org/x/text v0.26.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250528174236-200df99c418a // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
+	gopkg.in/olivere/elastic.v5 v5.0.86 // indirect
 )

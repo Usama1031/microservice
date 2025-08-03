@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	ErrNotFound = errors.New("Entity not found")
+	ErrNotFound = errors.New("entity not found")
 )
 
 type Repository interface {
@@ -27,9 +27,9 @@ type elasticRepository struct {
 }
 
 type productDocument struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Price       string `json:"price"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Price       float64 `json:"price"`
 }
 
 func NewElasticRepository(url string) (Repository, error) {
@@ -42,7 +42,7 @@ func NewElasticRepository(url string) (Repository, error) {
 		return nil, err
 	}
 
-	return &elasticRepository(client), nil
+	return &elasticRepository{client}, nil
 }
 
 func (r *elasticRepository) Close() {
@@ -77,7 +77,7 @@ func (r *elasticRepository) GetProductByID(ctx context.Context, id string) (*Pro
 
 	p := productDocument{}
 
-	if err = json.Unmarshal(*res.Source, &p); err != nil {
+	if err = json.Unmarshal(res.Source, &p); err != nil {
 		return nil, err
 	}
 
@@ -106,7 +106,7 @@ func (r *elasticRepository) ListProducts(ctx context.Context, skip, take uint64)
 	for _, hit := range res.Hits.Hits {
 		p := productDocument{}
 
-		if err := json.Unmarshal(*hit.Source, &p); err != nil {
+		if err := json.Unmarshal(hit.Source, &p); err != nil {
 			products = append(products, Product{
 				ID:          hit.Id,
 				Name:        p.Name,
@@ -141,7 +141,7 @@ func (r *elasticRepository) ListProductsWithIDs(ctx context.Context, ids []strin
 	products := []Product{}
 	for _, doc := range res.Docs {
 		p := productDocument{}
-		if err = json.Unmarshal(*doc.Source, &p); err == nil {
+		if err = json.Unmarshal(doc.Source, &p); err == nil {
 			products = append(products, Product{
 				ID:          doc.Id,
 				Name:        p.Name,
@@ -172,7 +172,7 @@ func (r *elasticRepository) SearchProducts(ctx context.Context, query string, sk
 
 	for _, hit := range res.Hits.Hits {
 		p := productDocument{}
-		if err = json.Unmarshal(&hit.Source, &p); err == nil {
+		if err = json.Unmarshal(hit.Source, &p); err == nil {
 			products = append(products, Product{
 				ID:          hit.Id,
 				Name:        p.Name,

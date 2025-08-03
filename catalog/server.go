@@ -6,13 +6,13 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/usama1031/go-grpc-graphql-microservice/account/pb"
+	pb "github.com/usama1031/go-grpc-graphql-microservice/catalog/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
 type grpcServer struct {
-	pb.UnimplementedAccountServiceServer
+	pb.UnimplementedCatalogServiceServer
 	service Service
 }
 
@@ -23,8 +23,8 @@ func ListenGRPC(s Service, port int) error {
 	}
 
 	serv := grpc.NewServer()
-	pb.RegisterAccountServiceServer(serv, &grpcServer{
-		UnimplementedAccountServiceServer: pb.UnimplementedAccountServiceServer{},
+	pb.RegisterCatalogServiceServer(serv, &grpcServer{
+		UnimplementedCatalogServiceServer: pb.UnimplementedCatalogServiceServer{},
 		service:                           s,
 	})
 
@@ -70,7 +70,7 @@ func (s *grpcServer) GetProducts(ctx context.Context, r *pb.GetProductsRequest) 
 
 	if r.Query != "" {
 		res, err = s.service.SearchProducts(ctx, r.Query, r.Skip, r.Take)
-	} else if len(r.Id) != 0 {
+	} else if len(r.Ids) != 0 {
 		res, err = s.service.GetProductsByIDs(ctx, r.Ids)
 	} else {
 		res, err = s.service.GetProducts(ctx, r.Skip, r.Take)
@@ -91,5 +91,5 @@ func (s *grpcServer) GetProducts(ctx context.Context, r *pb.GetProductsRequest) 
 		})
 	}
 
-	return &pb.GetProductsResponse{Product: products}, nil
+	return &pb.GetProductsResponse{Products: products}, nil
 }

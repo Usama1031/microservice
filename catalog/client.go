@@ -3,7 +3,7 @@ package catalog
 import (
 	"context"
 
-	pb "github.com/usama1031/go-grpc-graphql-microservice/account/pb"
+	pb "github.com/usama1031/go-grpc-graphql-microservice/catalog/pb"
 
 	"google.golang.org/grpc"
 )
@@ -16,7 +16,7 @@ type Client struct {
 func NewClient(url string) (*Client, error) {
 	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
-		return nil.err
+		return nil, err
 	}
 
 	c := pb.NewCatalogServiceClient(conn)
