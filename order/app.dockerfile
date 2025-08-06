@@ -7,15 +7,15 @@ WORKDIR /app
 COPY go.mod go.sum ./
 COPY vendor vendor
 
+COPY account account
 COPY catalog catalog
+COPY order order
 
-RUN go build -mod=vendor -o /app/catalog-service ./catalog/cmd
+RUN GO111MODULE=on go build -mod vendor -o /go/bin/app ./order/cmd/order
 
 FROM alpine:3.18
 
 WORKDIR /usr/bin
-
-COPY --from=build /app/catalog-service ./app
+COPY --from=build /go/bin .
 EXPOSE 8080
-
-CMD ["./app"]
+CMD ["app"]
