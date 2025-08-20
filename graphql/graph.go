@@ -1,6 +1,11 @@
 package main
 
-import "github.com/99designs/gqlgen/graphql"
+import (
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/usama1031/go-grpc-graphql-microservice/account"
+	"github.com/usama1031/go-grpc-graphql-microservice/catalog"
+	"github.com/usama1031/go-grpc-graphql-microservice/order"
+)
 
 type Server struct {
 	accountClient *account.Client
@@ -15,13 +20,13 @@ func NewGraphQLServer(accountUrl, catalogUrl, orderUrl string) (*Server, error) 
 		return nil, err
 	}
 
-	catalogClient, err := catalog.NewClient(catalog.Url)
+	catalogClient, err := catalog.NewClient(catalogUrl)
 	if err != nil {
 		catalogClient.Close()
 		return nil, err
 	}
 
-	orderClient, err := catalog.NewClient(catalog.Url)
+	orderClient, err := order.NewClient(orderUrl)
 	if err != nil {
 		accountClient.Close()
 		catalogClient.Close()
