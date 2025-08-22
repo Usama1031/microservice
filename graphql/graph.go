@@ -47,13 +47,13 @@ func (s *Server) Mutation() MutationResolver {
 }
 
 func (s *Server) Query() QueryResolver {
-	return *queryResolver{
+	return &queryResolver{
 		server: s,
 	}
 }
 
 func (s *Server) Account() AccountResolver {
-	return *accountResolver{
+	return &accountResolver{
 		server: s,
 	}
 }
